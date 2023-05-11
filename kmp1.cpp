@@ -1,4 +1,4 @@
-
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -15,42 +15,36 @@ void func_pref(const string &stroka, vector<pair<string,int>> &preffix)
 	string str;
 	for(int i = 0; i < stroka.size(); i++)
 	{
-		preffix.push_back(make_pair(str = stroka[i], 0));
+		auto t = make_pair(str = stroka[i], 0);
+		if(find(preffix.begin(), preffix.end(), t ) != preffix.end()) continue;
+		preffix.push_back(t);
 		str.clear();
-		if(i == (stroka.size() - 1)) break;
 		
-		for(int j = i+1; j < stroka.size(); j++)
+		for(int j = i+1; j < (stroka.size() - 1); j++)
 		{
 			preffix.push_back( make_pair(preffix.back().first + stroka[j], 0) );
 		}
 	}
 
-	for(auto it = 0; it < preffix.size(); it++)
+	/*for(auto it = 0; it < preffix.size(); it++)
 	{
-		for(auto t = 1; t < preffix.size(); t++)
-		{
-			if(preffix[it].first == preffix[t].first) preffix.erase(preffix.begin()+t);
-		}
-	}
+		cout << preffix[it].first << " " << preffix[it].second << endl;
+	}*/
 }
 //Тут идея такова, что для каждой строки делаеться ипс массив
 //потом сразу же ищется количество вхождений в строку и пишется в вектор preffix
 
-void func_array_of_templates( vector< pair<string, int> > &preffix, const string &str)
+void func_array_of_templates(vector< pair<string, int> > &preffix, const string &str)
 {
 	for(int i = 0; i < preffix.size(); i++)
 	{
 		int ips[preffix[i].first.size()]{0};
 		if(preffix[i].first.size() == 1)//Если в строке пары один символ -> пробегаемся по исходной строке, считая кол-во вхождений символа в строку
 		{
-			int count = 0;
-
 			for(int k = 0; k < str.size(); k++)
 			{
-				if(preffix[i].first[0] == str[k]) ++count;
+				if(preffix[i].first[0] == str[k]) ++preffix[i].second;
 			}
-
-			preffix[i].second = count;
 			continue;
 		}
 		for(int j = 0; j < preffix[i].first.size(); j++) // этот цикл идет по строке в паре...
@@ -69,11 +63,11 @@ void func_array_of_templates( vector< pair<string, int> > &preffix, const string
 		}
 		//Теперь организуем поиск с помощью КМП
 		//Число найденных паттернов запишем в вектор с парами
-		int ii = 0, jj = 0, count = -1;
+		int ii = 0, jj = 0;
 		while(ii < str.size())
 		{
 			if(preffix[i].first[jj] == str[ii]) {jj++; ii++;}
-			if(jj == preffix[i].first.size()) {++count; jj = ips[jj - 1];}
+			if(jj == preffix[i].first.size()) {++preffix[i].second; jj = ips[jj - 1];}
 			else if (ii < str.size() && preffix[i].first[jj] != str[ii])
 			{
 				if(jj != 0)
@@ -83,26 +77,49 @@ void func_array_of_templates( vector< pair<string, int> > &preffix, const string
 				else ii += 1;
 			}
 		}
-		preffix[i].second = count;
-		//count = -1;
+	}
+}
+
+void show_result(const vector< pair<string, int> > &preffix, int kr)
+{
+	int count = 1;
+	for(int i = 0; i < preffix.size(); i++)
+	{
+		/*if(preffix[i]. second == kr)
+		{
+			cout << "Исходная строка кратна " << kr << " " << count << "-ый вариант кратности: ";
+			cout << preffix[i].first << endl;
+			++count;
+		}*/
+		cout << preffix[i].first << " " << preffix[i].second << endl;
 	}
 }
 
 
+void start()
+{
+	string str;//исходная строка
+	int kratnost;
+	
+	cout << "Введите строку: ";
+	getline(cin, str);
+	cout << endl;
+
+	cout << "Введите кратность: ";
+	cin >> kratnost;
+	cout << endl;
+	
+	vector <pair<string, int>> preffix;//хранит пары  префикс и количество вхождений
+	func_pref(str, preffix);//вычисляет префиксы
+	func_array_of_templates(preffix, str);//считает количество вхождений
+
+	show_result(preffix, kratnost);
+
+}
 
 int main()
 {
-	string str = "abcabcabcabc";//исходная строка
-	
-	vector <pair<string, int>> preffix;//хранит префиксы
-	func_pref(str, preffix);//вычисляет префиксы
-	func_array_of_templates(preffix, str);
-
-	for(int i = 0; i < preffix.size(); i++)
-	{
-		/*if(preffix[i].second == 3)*/ cout << preffix[i].first << " " << preffix[i].second;
-		cout << endl;
-	}
+	start();
 
 	return 0;
 }
