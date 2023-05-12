@@ -12,17 +12,21 @@ void func_pref(const string &stroka, vector<pair<string,int>> &preffix)
 		preffix.push_back(make_pair(str = stroka[i], 0));
 		str.clear();
 		
+		cout << endl <<"Префиксы: " << endl;
+		cout << preffix.back().first << " ";
 		for(int j = i+1; j < (stroka.size()/2); j++)
 		{
 			auto t = make_pair(preffix.back().first + stroka[j], 0);
 			preffix.push_back(t);
+			cout << preffix.back().first << " ";
 		}
+		cout << endl << endl;
 	}
 }
 
 void func_array_of_templates(vector< pair<string, int> > &preffix, const string &str)
 {
-	for(int i = 0; i < preffix.size(); i++)
+	for(int i = preffix.size() - 1; i >= 0 ; i--)
 	{
 		int ii = 0, jj = 0;
 		while(ii < str.size())
