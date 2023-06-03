@@ -7,12 +7,12 @@ int hash(const std::string& str)
 	//По идеи, это не надежная функция
 	//Пароль можно подобрать из разных символов, главное чтобы сумма этих символов подходила
 	//Каждый чар переводим в инт и складываем с другим чар переведенным в инт и т.д.
-	int key = 0;
-    const double A = 0.007;
-    const int M = 1124;
-    for(int i = 0; i < str.size(); i++) key += str[i];
+    	int key = 0;
+    	const double A = 0.007;
+  	const int M = 1124;
+    	for(int i = 0; i < str.size(); i++) key += str[i];
     
-    return int(M * (A * key - int(A* key)));
+    	return int(M * (A * key - int(A* key)));
 }
 
 
