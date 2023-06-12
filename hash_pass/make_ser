@@ -1,0 +1,11 @@
+sserver: server.o
+	g++ -o server server.o user.o -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network
+
+server.o: server.cpp
+	g++ -I/usr/include/include -c server.cpp
+	
+user.o:	user.cpp
+	g++ -I/usr/include/include -c user.cpp
+
+clean:
+	rm server.o

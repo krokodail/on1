@@ -1,0 +1,7 @@
+client: client.o
+	g++ -o client client.o -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network
+
+client.o: client.cpp
+	g++ -I/usr/include/include -c client.cpp
+clean:
+	rm client.o
