@@ -1,8 +1,9 @@
 main:   main.o
         g++ -o main $^
-
+        
 main.o: main.cpp
         g++ -c $^
 
-clean:
+run:
+        chmod 100 main
         rm *.o
