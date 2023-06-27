@@ -1,0 +1,93 @@
+#include <iostream>
+#include <fstream>
+#include <unistd.h>
+
+class User {
+public:
+    std::string name;
+    int age;
+};
+
+class Message {
+public:
+    std::string content;
+    std::string sender;
+};
+
+// читаем пользователя из файла
+User readUserFromFile(const std::string& filename) {
+    User user;
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        file >> user.name >> user.age;
+        file.close();
+    }
+    return user;
+}
+
+// пишим пользователя в файл
+void writeUserToFile(const std::string& filename, const User& user) {
+    std::ofstream file(filename);
+    if (file.is_open()) {
+        file << user.name << " " << user.age;
+        file.close();
+    }
+}
+
+// читаем сообщение из файла
+Message readMessageFromFile(const std::string& filename) {
+    Message message;
+    std::ifstream file(filename);
+    if (file.is_open()) {
+        std::getline(file, message.content);
+        std::getline(file, message.sender);
+        file.close();
+    }
+    return message;
+}
+
+// пишим сообщение в файл
+void writeMessageToFile(const std::string& filename, const Message& message) {
+    std::ofstream file(filename);
+    if (file.is_open()) {
+        file << message.content << "\n" << message.sender;
+        file.close();
+    }
+}
+
+int main() {
+    std::string userFilename = "user_data.txt";
+    std::string messageFilename = "message_data.txt";
+
+    // установка разрешений чтения и записи только для юзера
+    if (access(userFilename.c_str(), F_OK) != 0)
+        system(("touch " + userFilename).c_str());
+    system(("chmod 0600 " + userFilename).c_str());
+
+    if (access(messageFilename.c_str(), F_OK) != 0)
+        system(("touch " + messageFilename).c_str());
+    system(("chmod 0600 " + messageFilename).c_str());
+
+    // Пример
+    User user;
+    user.name = "John Doe";
+    user.age = 25;
+
+    writeUserToFile(userFilename, user);
+
+    User readUser = readUserFromFile(userFilename);
+
+    std::cout << "Read User: " << readUser.name << ", " << readUser.age << std::endl;
+
+    Message message;
+    message.content = "Hello, world!";
+    message.sender = "Alice";
+
+    writeMessageToFile(messageFilename, message);
+
+    Message readMessage = readMessageFromFile(messageFilename);
+
+    std::cout << "Read Message: " << readMessage.content << ", " << readMessage.sender << std::endl;
+
+    return 0;
+}
