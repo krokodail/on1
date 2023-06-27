@@ -7,3 +7,5 @@ main.o: main.cpp
 run:
         chmod 100 main
         rm *.o
+        @echo "----------------------------------------------"
+        ./main
